@@ -48,7 +48,7 @@ public class Agent {
 			else if (agent2.getCurrentStrategy()=='M')
 				return result=0;
 			else if (agent2.getCurrentStrategy()=='L')
-				return result=0;
+				return result=0.7;
       	   case'M':
 				if (agent2.getCurrentStrategy()=='H')
 					return result=0;
@@ -58,7 +58,7 @@ public class Agent {
 					return result=0.7;
       	   case 'L':
 				if (agent2.getCurrentStrategy()=='H')
-					return result=0;
+					return result=0.3;
 				else if (agent2.getCurrentStrategy()=='M')
 					return result=0.3;
 				else if (agent2.getCurrentStrategy()=='L')
@@ -99,6 +99,7 @@ public class Agent {
 		
        	double temp1=0;
        	double temp2=0;
+       	length=network.getDegree(this);
        	for (Object o : neighbors) {
        		if(currentPayoff>=((Agent)o).getCurrentPayoff()){
        				temp2=currentPayoff-((Agent)o).getCurrentPayoff();
@@ -109,7 +110,7 @@ public class Agent {
        				sumAlpha+=temp1;
        		 }
        		totalWelfare+=((Agent)o).getCurrentPayoff();
-       		length++;
+       		
        		//System.out.println("length     "+length);
        	}
 	   
@@ -117,7 +118,8 @@ public class Agent {
     	   {
     	   currentSocialPayoff=currentPayoff;
     	   }
-       else currentSocialPayoff=currentPayoff-alpha*sumAlpha/length-beta*sumBeta/length+theta*totalWelfare;
+       else currentSocialPayoff=currentPayoff-alpha*sumAlpha/length-beta*sumBeta/length;
+    		   // +theta*totalWelfare;
 	}
     
     public void randomMatchAndChooseStrategy(){
@@ -149,6 +151,7 @@ public class Agent {
        	double temp2D=0;
        	double ramdomNeighborayoff=0;
        	
+       	lengthD=network.getDegree(this);
 		if(isIfSocialPreference()){
        		for (Object o : neighbors) {
            		if(random.getCurrentSocialPayoff()>=((Agent)o).getCurrentSocialPayoff()){
@@ -160,9 +163,8 @@ public class Agent {
            				sumAlphaD+=temp1D;
            		 }
            		totalWelfareD+=((Agent)o).getCurrentPayoff();
-           		
        		
-       		ramdomNeighborayoff=random.getCurrentPayoff()-alpha*sumAlphaD/lengthD-beta*sumBetaD/lengthD;
+       	 ramdomNeighborayoff=random.getCurrentPayoff()-alpha*sumAlphaD/lengthD-beta*sumBetaD/lengthD;
             //+theta*(totalWelfareD+difference);
        		 
        	  }
