@@ -53,14 +53,14 @@ public class Agent {
 				if (agent2.getCurrentStrategy()=='H')
 					return result=0;
 				else if (agent2.getCurrentStrategy()=='M')
-					return result=0;
+					return result=0.5;
 				else if (agent2.getCurrentStrategy()=='L')
-					return result=0;
+					return result=0.7;
       	   case 'L':
 				if (agent2.getCurrentStrategy()=='H')
 					return result=0;
 				else if (agent2.getCurrentStrategy()=='M')
-					return result=0;
+					return result=0.3;
 				else if (agent2.getCurrentStrategy()=='L')
 					return result=0.3;
 	        }
