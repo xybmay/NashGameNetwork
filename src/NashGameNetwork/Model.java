@@ -29,7 +29,7 @@ import repast.simphony.space.graph.Network;
 import repast.simphony.context.space.graph.*;
 
   @SuppressWarnings("unchecked")
-  public class GameBuilder extends DefaultContext implements ContextBuilder<Agent>{
+  public class Model extends DefaultContext implements ContextBuilder<Agent>{
   //Here we will first construct the world which the agent lives in it.
 	//first creates the context, then add the agent 
 	//then creates a small world complex network

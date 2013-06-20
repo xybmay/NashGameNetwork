@@ -34,7 +34,7 @@ public class Agent {
 		this.beta = (Double)p.getValue("beta of social preference function");
 		this.theta= (Double)p.getValue("theta of social preference coefficient");
 		this.currentStrategy='N';
-		GameBuilder context = (GameBuilder) ContextUtils.getContext(this);
+		Model context = (Model) ContextUtils.getContext(this);
         Network network=(Network)context.getProjection("Living world");
         ifSocialPreference=true;
 	}
