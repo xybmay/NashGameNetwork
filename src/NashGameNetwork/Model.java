@@ -1,6 +1,6 @@
 package NashGameNetwork;
 
-// the model, in charge of the creation of the agent, the world and the execution of the programme. 
+// the model, in charge of the creation of the agent, the world and the execution of the program. 
 import java.awt.geom.Arc2D.Float;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
