@@ -51,6 +51,8 @@ import repast.simphony.context.space.graph.*;
 		double wsProbability=(Double)p.getValue("WS probability");
 		actionNumber = (Integer)p.getValue("number of agent in one step");
 		numberOfLStrategy= (Integer)p.getValue("number of L strategy");
+		numberOfMStrategy= (Integer)p.getValue("number of M strategy");
+		numberOfHStrategy= (Integer)p.getValue("number of H strategy");
 		int agentID=0;
         agentlist.clear();
 		//add the agent to the context
@@ -122,14 +124,15 @@ import repast.simphony.context.space.graph.*;
 	  }
 	
 	@ScheduledMethod(start=0,interval=1)
-	  public void step(){
- 	    Parameters p = RunEnvironment.getInstance().getParameters();
-      actionNumber = (Integer)p.getValue("number of agent in one step");
-      Agent[] runlist= new Agent[actionNumber];
-      int num = (Integer)p.getValue("number of agent");
-      Object[] alist=new Object[num];
-      alist=this.toArray();
-      for(int i=0;i<alist.length;i++){
+	   public void step(){
+		
+ 	   Parameters p = RunEnvironment.getInstance().getParameters();
+       actionNumber = (Integer)p.getValue("number of agent in one step");
+       Agent[] runlist= new Agent[actionNumber];
+       int num = (Integer)p.getValue("number of agent");
+       Object[] alist=new Object[num];
+       alist=this.toArray();
+       for(int i=0;i<alist.length;i++){
       	agentlist.add(alist[i]);
       }
              
@@ -146,6 +149,7 @@ import repast.simphony.context.space.graph.*;
 //	    }
  	    
  	    for(int k=0;k<alist.length;k++){
+ 	    	//first play the nash demand game with neighboring agents
  	    	((Agent)alist[k]).step1();
  	    	//System.out.println("step 1");
  	    	//System.out.println("step   ");
@@ -167,22 +171,18 @@ import repast.simphony.context.space.graph.*;
 	    	//System.out.println("step   ");
 	    }
   	 
-// 	for(int k=0;k<agentlist.size();k++){
-//  	((GameAgent)agentlist.get(k)).step2();
-//  	//System.out.println("step   ");
-//  }
- 	 
  	   for(int k=0;k<alist.length;k++){
  		((Agent)alist[k]).postStep();
  		//System.out.println("step 4");
-  	//System.out.println("Poststep   ");
+   	   //System.out.println("Poststep   ");
+ 	   }
     }
  	   
 // 	for(int k=0;k<agentlist.size();k++){
 //  	((GameAgent)agentlist.get(k)).postStep();
 //  	//System.out.println("step   ");
 //   }
- }
+ // }
 	
 	@ScheduledMethod(start=stop)
 	public void end(){
@@ -203,19 +203,18 @@ import repast.simphony.context.space.graph.*;
 //          }
           
           for(int i=0;i<agentlist.size();i++){
-              if(((Agent) (agentlist.get(i))).getChoosedStrategy()=='L') numberOfLStrategy++;
-              else if(((Agent) (agentlist.get(i))).getChoosedStrategy()=='M') numberOfMStrategy++;
+              if(((Agent) (agentlist.get(i))).getCurrentStrategy()=='L') numberOfLStrategy++;
+              else if(((Agent) (agentlist.get(i))).getCurrentStrategy()=='M') numberOfMStrategy++;
               else numberOfHStrategy++;
                 
               totalPayoff+=((Agent) (agentlist.get(i))).getCurrentPayoff();
               totalSocialPreferencePayoff+=((Agent) (agentlist.get(i))).getCurrentSocialPayoff();
           }
           
-          double payoffOfDC=(Double)p.getValue("payoffOfDC");
           int numberOfSocialAgent=(Integer) p.getValue("number of social preference agent");
           double alpha=(Double)p.getValue("alpha of social preference function");
           double beta=(Double)p.getValue("beta of social preference function");
-          double theta=(Double)p.getValue("theta of social preference coefficient");
+         //double theta=(Double)p.getValue("theta of social preference coefficient");
           double wsProbability=(Double)p.getValue("WS probability");
           int degree=(Integer)p.getValue("neighbor size");
           pwresult.print("       ");
@@ -229,7 +228,7 @@ import repast.simphony.context.space.graph.*;
           pwresult.print("       ");
           pwresult.printf("%.1f",totalPayoff); 
           pwresult.print("       ");
-          pwresult.printf("%f",payoffOfDC); 
+          pwresult.printf("%.1f",totalSocialPreferencePayoff); 
           pwresult.print("       ");
           pwresult.printf("%d",numberOfSocialAgent); 
           pwresult.print("       ");
@@ -241,7 +240,7 @@ import repast.simphony.context.space.graph.*;
           pwresult.print("       ");
           pwresult.printf("%f",beta); 
           pwresult.print("       ");
-          pwresult.printf("%f",theta); 
+          //pwresult.printf("%f",theta); 
           pwresult.println("       ");
           pwresult.close();
 		}catch (IOException e) {

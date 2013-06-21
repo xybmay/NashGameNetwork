@@ -32,7 +32,7 @@ public class Agent {
 		this.alpha = (Double)p.getValue("alpha of social preference function");
 		this.beta = (Double)p.getValue("beta of social preference function");
 		this.theta= (Double)p.getValue("theta of social preference coefficient");
-		this.currentStrategy='N';
+		this.currentStrategy='L';
 	}
 	
 	public static double play(Agent agent1,Agent agent2){
@@ -90,7 +90,7 @@ public class Agent {
 		double alpha = (Double)p.getValue("alpha of social preference function");
 		//double beta = (Double)p.getValue("beta of social preference function");
 		double beta=alpha;
-		double theta= (Double)p.getValue("theta of social preference coefficient");
+		//double theta= (Double)p.getValue("theta of social preference coefficient");
 		int length=0;
 		double sumAlpha=0;
 		double sumBeta=0;
@@ -202,6 +202,7 @@ public class Agent {
 
 	public void postStep() {
 		// update the status after the the choice
+		currentStrategy=choosedStrategy; //used for the next step
 		previouisPayoff=currentPayoff;
 		previouisSocialPayoff=currentSocialPayoff;
 	}

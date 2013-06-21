@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <parameters>
 
-	<parameter name="randomSeed" displayName="Default Random Seed" type="int" defaultValue="__NULL__" />
-
-</parameters>
+	<parameter name="number of agent" displayName="number of agent" type="int" defaultValue="50000" />
+	<parameter name="neighbor size" displayName="neighbor size" type="int" defaultValue="6" />
+	<parameter name="WS probability" displayName="WS probability" type="float" defaultValue="0.01" />
+	<parameter name="number of agent in one step" displayName="number of agent in one step" type="int" defaultValue="5000" />
+	<parameter name="number of L strategy" displayName="number of L strategy" type="int" defaultValue="1600" />
+	<parameter name="number of M strategy" displayName="number of M strategy" type="int" defaultValue="1600" />
+	<parameter name="number of H strategy" displayName="number of H strategy" type="int" defaultValue="1800" />
+	<parameter name="number of social preference agent" displayName="number of social preference agent" type="int" defaultValue="5000" />
+	<parameter name="number of agent in one step" displayName="number of agent in one step" type="int" defaultValue="5000" />
+	<parameter name="alpha of social preference function" displayName="alpha of social preference function" type="float" defaultValue="0.1" />
+	<parameter name="beta of social preference function" displayName="beta of social preference function" type="float" defaultValue="0.1" />
+	<parameter name="lambda" displayName="lambda" type="float" defaultValue="0.1" />	
+	</parameters>
