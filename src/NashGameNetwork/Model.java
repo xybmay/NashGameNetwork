@@ -39,28 +39,28 @@ import repast.simphony.context.space.graph.*;
 	private int actionNumber;
 	private final  int stop=5000;
 	private double  totalPayoff;
-	private double  totalRealPayoff;
-	private int numberCooperation;
-	private int numberDefection;
+	private double  totalSocialPreferencePayoff;
+	private int numberOfLStrategy;
+	private int numberOfMStrategy;
+	private int numberOfHStrategy;
 	
 	public Context build(Context<Agent> context){
 		Parameters p = RunEnvironment.getInstance().getParameters();
-		int num = (Integer)p.getValue("number of agent");
+		int numberOfAgent = (Integer)p.getValue("number of agent");
 		int length = (Integer)p.getValue("neighbor size");
 		double wsProbability=(Double)p.getValue("WS probability");
 		actionNumber = (Integer)p.getValue("number of agent in one step");
-		numberCooperation= (Integer)p.getValue("number of cooperation");
-		numberDefection=num-numberCooperation;
+		numberOfLStrategy= (Integer)p.getValue("number of L strategy");
 		int agentID=0;
         agentlist.clear();
 		//add the agent to the context
-		for(int i=0;i<num;i++ ){
-			//System.out.println("creat new agent");
+		for(int i=0;i<numberOfAgent;i++ ){
+			//System.out.println("create new agent");
 			Agent agent=new Agent(); 
 			agent.setID(i);
 			context.add(agent);
 			agentlist.add((Object)agent);
-			agent.setCurrentStrategy('D');
+			agent.setCurrentStrategy('L');
 		}
 		
 		NetworkGenerator gen= new WattsBetaSmallWorldGenerator(wsProbability,length,false);
@@ -72,12 +72,25 @@ import repast.simphony.context.space.graph.*;
         
 		//set the initial status
 		int numbertemp=0;
-		while( numbertemp<numberCooperation){
+		while( numbertemp<numberOfMStrategy){
 			RandomHelper.createUniform();
-			int random=RandomHelper.nextIntFromTo(0, num-1);
-			if (((Agent)agentlist.get(random)).getCurrentStrategy()=='D')
+			int random=RandomHelper.nextIntFromTo(0, numberOfAgent-1);
+			if (((Agent)agentlist.get(random)).getCurrentStrategy()=='L')
 			           	{
-				           ((Agent)agentlist.get(random)).setCurrentStrategy('C');
+				           ((Agent)agentlist.get(random)).setCurrentStrategy('M');
+				           numbertemp++;
+			           	}
+			else continue;
+		}
+		
+		numbertemp=0;
+		while( numbertemp<numberOfHStrategy){
+			RandomHelper.createUniform();
+			int random=RandomHelper.nextIntFromTo(0, numberOfAgent-1);
+			if ((((Agent)agentlist.get(random)).getCurrentStrategy()=='L') &
+				 (((Agent)agentlist.get(random)).getCurrentStrategy()=='M'))           	
+			          {
+				           ((Agent)agentlist.get(random)).setCurrentStrategy('H');
 				           numbertemp++;
 			           	}
 			else continue;
@@ -92,7 +105,7 @@ import repast.simphony.context.space.graph.*;
 		
 		while(sum<numSocialPreference){
 		    RandomHelper.createUniform();
-			int random=RandomHelper.nextIntFromTo(0, num-1);
+			int random=RandomHelper.nextIntFromTo(0,numSocialPreference -1);
 		    if (!((Agent)agentlist.get(random)).isIfSocialPreference()){
 		    ((Agent)agentlist.get(random)).setIfSocialPreference(true);
 		    sum++;
@@ -154,12 +167,6 @@ import repast.simphony.context.space.graph.*;
 	    	//System.out.println("step   ");
 	    }
   	 
-  	 for(int k=0;k<alist.length;k++){
-  		 ((Agent)alist[k]).step4();
-  		 //System.out.println("step 3");
-	    	//System.out.println("step   ");
-	    }
-  	 
 // 	for(int k=0;k<agentlist.size();k++){
 //  	((GameAgent)agentlist.get(k)).step2();
 //  	//System.out.println("step   ");
@@ -183,8 +190,9 @@ import repast.simphony.context.space.graph.*;
 			FileWriter  fwresult = new FileWriter("./SimulationDataOne.txt",true);
 			BufferedWriter bwresult = new BufferedWriter(fwresult);
           PrintWriter pwresult= new PrintWriter(bwresult);
-          numberCooperation=0;
-          numberDefection=0;
+          numberOfLStrategy=0;
+          numberOfMStrategy=0;
+          numberOfHStrategy=0;
           
           Parameters p = RunEnvironment.getInstance().getParameters();
            int num = (Integer)p.getValue("number of agent");
@@ -195,10 +203,12 @@ import repast.simphony.context.space.graph.*;
 //          }
           
           for(int i=0;i<agentlist.size();i++){
-              if(((Agent) (agentlist.get(i))).getChoosedStrategy()=='C')numberCooperation++;
-              else numberDefection++;
+              if(((Agent) (agentlist.get(i))).getChoosedStrategy()=='L') numberOfLStrategy++;
+              else if(((Agent) (agentlist.get(i))).getChoosedStrategy()=='M') numberOfMStrategy++;
+              else numberOfHStrategy++;
+                
               totalPayoff+=((Agent) (agentlist.get(i))).getCurrentPayoff();
-              totalRealPayoff+=((Agent) (agentlist.get(i))).getCurrentSocialPayoff();
+              totalSocialPreferencePayoff+=((Agent) (agentlist.get(i))).getCurrentSocialPayoff();
           }
           
           double payoffOfDC=(Double)p.getValue("payoffOfDC");
@@ -209,9 +219,9 @@ import repast.simphony.context.space.graph.*;
           double wsProbability=(Double)p.getValue("WS probability");
           int degree=(Integer)p.getValue("neighbor size");
           pwresult.print("       ");
-          pwresult.printf("%.15f",((double)(numberCooperation)/(numberCooperation+numberDefection)));
+          pwresult.printf("%.15f",(double)(numberOfLStrategy)/(numberOfLStrategy+numberOfMStrategy+numberOfHStrategy);
           pwresult.print("       ");
-          pwresult.printf("%.15f",((double)(numberDefection)/(numberCooperation+numberDefection)));
+          pwresult.printf("%.15f",((double)(numberOfMStrategy)/(numberCooperation+numberDefection)));
           pwresult.print("       ");
           pwresult.printf("%.1f",(RunEnvironment.getInstance()).getCurrentSchedule().getTickCount()); 
           pwresult.print("       ");

@@ -15,15 +15,14 @@ public class Agent {
 	private double previouisPayoff;
 	private double currentSocialPayoff;
 	private double previouisSocialPayoff;
-	private double currentSocialUtility;
-	private double previousSocialUtility;
 	private double alpha;
 	private double beta;
 	private double lambda;
 	private double theta;
-	private  Network network;  //the network agent located in 
 	private boolean ifSocialPreference;
 	private char choosedStrategy;
+	private Model context;
+	private  Network network;  //the network agent located in 
 	
 	public Agent( ){
 		//initialize  agent  parameter
@@ -34,9 +33,6 @@ public class Agent {
 		this.beta = (Double)p.getValue("beta of social preference function");
 		this.theta= (Double)p.getValue("theta of social preference coefficient");
 		this.currentStrategy='N';
-		Model context = (Model) ContextUtils.getContext(this);
-        Network network=(Network)context.getProjection("Living world");
-        ifSocialPreference=true;
 	}
 	
 	public static double play(Agent agent1,Agent agent2){
@@ -67,9 +63,12 @@ public class Agent {
 		return 0;
 	}
 
-	public double computePayoff() {
+	public double computeOneRoundPayoff() {
 	    //compute the payoff and the socialPreference if needed in initial status
         currentPayoff=0;
+		context = (Model) ContextUtils.getContext(this);
+        network=(Network)context.getProjection("Living world");
+        ifSocialPreference=true;
         
 	    Iterable neighbors=network.getAdjacent(this);
 	    //System.out.println("begin compute the payoff  ");
@@ -83,7 +82,7 @@ public class Agent {
 	}
 	
 
-    public void computeSocialPreference(){
+    public void computeCurrentRoundSocialPreference(){
     	
     	currentSocialPayoff=0;
 	    Iterable neighbors=network.getAdjacent(this);  
@@ -149,7 +148,7 @@ public class Agent {
         //System.out.println("random   ID   "+random.getID()+"   "+this.getID());
     	double temp1D=0;
        	double temp2D=0;
-       	double ramdomNeighborayoff=0;
+       	double assumedRamdomNeighborSocialpayoff=0;
        	
        	lengthD=network.getDegree(this);
 		if(isIfSocialPreference()){
@@ -162,18 +161,18 @@ public class Agent {
            				temp1D=((Agent)o).getCurrentSocialPayoff()-random.getCurrentSocialPayoff();
            				sumAlphaD+=temp1D;
            		 }
-           		totalWelfareD+=((Agent)o).getCurrentPayoff();
+           		//totalWelfareD+=((Agent)o).getCurrentPayoff();
        		
-       	 ramdomNeighborayoff=random.getCurrentPayoff()-alpha*sumAlphaD/lengthD-beta*sumBetaD/lengthD;
+       	 assumedRamdomNeighborSocialpayoff=random.getCurrentPayoff()-alpha*sumAlphaD/lengthD-beta*sumBetaD/lengthD;
             //+theta*(totalWelfareD+difference);
        		 
        	  }
 		}
        	else{
-       		ramdomNeighborayoff=random.getCurrentPayoff();
+       		assumedRamdomNeighborSocialpayoff=random.getCurrentPayoff();
        	 }
        	
-        prob=(double)1/(1+Math.exp(lambda*(this.getCurrentSocialPayoff()-ramdomNeighborayoff)));
+        prob=(double)1/(1+Math.exp(lambda*(this.getCurrentSocialPayoff()-assumedRamdomNeighborSocialpayoff)));
 	    //prob=(random.getCurrentPayoff()-this.getCurrentPayoff())/max;
 	    //System.out.println("Probability    "+prob+ "   random is    "+randomProb);
 	    if (randomProb<=prob) {
@@ -184,9 +183,29 @@ public class Agent {
 	    	this.choosedStrategy=this.getCurrentStrategy();
 	    	//System.out.println("strategy no changed");
 	    };
-	      
     }
 		
+	public void step1() {
+		computeOneRoundPayoff();
+		//play the game with the neighbors and get the payoff.  
+	}
+
+	public void step2() {
+		// according the payoff,  computing the payoff when the agent displays social preference;
+		computeCurrentRoundSocialPreference();
+	}
+
+	public void step3() {
+		// according the payoff and the randomly chosen neighbor,  choose the strategy next
+		randomMatchAndChooseStrategy( );
+	}
+
+	public void postStep() {
+		// update the status after the the choice
+		previouisPayoff=currentPayoff;
+		previouisSocialPayoff=currentSocialPayoff;
+	}
+    
 	/**
 	 * @return the iD
 	 */
@@ -247,30 +266,7 @@ public class Agent {
 	public void setPreviouisPayoff(double previouisPayoff) {
 		this.previouisPayoff = previouisPayoff;
 	}
-	/**
-	 * @return the currentSocialUtility
-	 */
-	public double getCurrentSocialUtility() {
-		return currentSocialUtility;
-	}
-	/**
-	 * @param currentSocialUtility the currentSocialUtility to set
-	 */
-	public void setCurrentSocialUtility(double currentSocialUtility) {
-		this.currentSocialUtility = currentSocialUtility;
-	}
-	/**
-	 * @return the previousSocialUtility
-	 */
-	public double getPreviousSocialUtility() {
-		return previousSocialUtility;
-	}
-	/**
-	 * @param previousSocialUtility the previousSocialUtility to set
-	 */
-	public void setPreviousSocialUtility(double previousSocialUtility) {
-		this.previousSocialUtility = previousSocialUtility;
-	}
+	
 	/**
 	 * @return the alpha
 	 */
@@ -367,29 +363,5 @@ public class Agent {
 	public void setChoosedStrategy(char choosedStrategy) {
 		this.choosedStrategy = choosedStrategy;
 	}
-
-	public void step1() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void step2() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void step3() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void step4() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void postStep() {
-		// TODO Auto-generated method stub
-		
-	}
+	
 }
