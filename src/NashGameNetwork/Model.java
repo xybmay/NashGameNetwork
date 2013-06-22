@@ -44,7 +44,8 @@ import repast.simphony.context.space.graph.*;
 	private int numberOfMStrategy;
 	private int numberOfHStrategy;
 	
-	public Context build(Context<Agent> context){
+	public Context<Agent>build(Context<Agent>context){
+		context.setId("NashGameNetwork");
 		Parameters p = RunEnvironment.getInstance().getParameters();
 		int numberOfAgent = (Integer)p.getValue("number of agent");
 		int length = (Integer)p.getValue("neighbor size");
@@ -53,20 +54,20 @@ import repast.simphony.context.space.graph.*;
 		numberOfLStrategy= (Integer)p.getValue("number of L strategy");
 		numberOfMStrategy= (Integer)p.getValue("number of M strategy");
 		numberOfHStrategy= (Integer)p.getValue("number of H strategy");
-		int agentID=0;
         agentlist.clear();
 		//add the agent to the context
-		for(int i=0;i<numberOfAgent;i++ ){
-			//System.out.println("create new agent");
-			Agent agent=new Agent(); 
+        NetworkGenerator gen= new WattsBetaSmallWorldGenerator(wsProbability,length,false);
+		NetworkBuilder builder=new NetworkBuilder("world",context,false);
+        
+        for(int i=0;i<numberOfAgent;i++ ){
+			Agent agent=new Agent(context); 
 			agent.setID(i);
 			context.add(agent);
-			agentlist.add((Object)agent);
+			agentlist.add((Agent)agent);
 			agent.setCurrentStrategy('L');
+			//System.out.println("new agent created:       "+context.size());
 		}
 		
-		NetworkGenerator gen= new WattsBetaSmallWorldGenerator(wsProbability,length,false);
-		NetworkBuilder builder=new NetworkBuilder("Living world",context,false);
 		builder.setGenerator(gen);
 		Network net = builder.buildNetwork();
 		System.out.println("the network creation is done!!!");
@@ -89,7 +90,7 @@ import repast.simphony.context.space.graph.*;
 		while( numbertemp<numberOfHStrategy){
 			RandomHelper.createUniform();
 			int random=RandomHelper.nextIntFromTo(0, numberOfAgent-1);
-			if ((((Agent)agentlist.get(random)).getCurrentStrategy()=='L') &
+			if ((((Agent)agentlist.get(random)).getCurrentStrategy()=='L') ||
 				 (((Agent)agentlist.get(random)).getCurrentStrategy()=='M'))           	
 			          {
 				           ((Agent)agentlist.get(random)).setCurrentStrategy('H');
@@ -97,10 +98,6 @@ import repast.simphony.context.space.graph.*;
 			           	}
 			else continue;
 		}
-		
-//		for(int j=0;j<agentlist.size();j++){
-//			System.out.println("agent   "+((GameAgent)agentlist.get(j)).getID()+"    "+((GameAgent)agentlist.get(j)).getCurrentStrategy());
-//		}
 		
 		int numSocialPreference = (Integer)p.getValue("number of social preference agent");
 		int sum=0;
@@ -115,76 +112,12 @@ import repast.simphony.context.space.graph.*;
 		}
 		  
 		System.out.println("set the agent which is the social preference type  is done!!!");
-		// for(int k=0;k<agentlist.size();k++){
-	   	    	//System.out.println("PayoffCC is set to "+((GameAgent)agentlist.get(k)).getPayoffOfCC()+"   ID is   "
-	   	    			//+((GameAgent)agentlist.get(k)).getID()) ;
-	   	    	//System.out.println("step   ");
-	   	  //  }
+		System.out.println("Model will begin");
+		
 		return context;
 	  }
-	
-	@ScheduledMethod(start=0,interval=1)
-	   public void step(){
-		
- 	   Parameters p = RunEnvironment.getInstance().getParameters();
-       actionNumber = (Integer)p.getValue("number of agent in one step");
-       Agent[] runlist= new Agent[actionNumber];
-       int num = (Integer)p.getValue("number of agent");
-       Object[] alist=new Object[num];
-       alist=this.toArray();
-       for(int i=0;i<alist.length;i++){
-      	agentlist.add(alist[i]);
-      }
-             
-//      int j=0;
-// 	    while(j<actionNumber){
-// 	    	int RunID=RandomHelper.nextIntFromTo(0, num-1);
-// 	    	ArrayList RunIDList = new ArrayList();
-// 	    	GameAgent temp=(GameAgent)agentlist.get(RunID);
-//	        if (!RunIDList.contains(RunID)){
-//	        	RunIDList.add(RunID);
-//	           	runlist[j]=temp;
-//	            j+=1;
-//	        }
-//	    }
- 	    
- 	    for(int k=0;k<alist.length;k++){
- 	    	//first play the nash demand game with neighboring agents
- 	    	((Agent)alist[k]).step1();
- 	    	//System.out.println("step 1");
- 	    	//System.out.println("step   ");
- 	    }
- 	    
-// 	 for(int k=0;k<agentlist.size();k++){
-//	    	((GameAgent)agentlist.get(k)).step1();
-//	    	//System.out.println("step   ");
-//	    }
- 	    
-  	 for(int k=0;k<alist.length;k++){
-  		 ((Agent)alist[k]).step2();
-  		 //System.out.println("step 2");
-	    	//System.out.println("step   ");
-	    }
- 	    
-  	 for(int k=0;k<alist.length;k++){
-  		 ((Agent)alist[k]).step3();
-	    	//System.out.println("step   ");
-	    }
-  	 
- 	   for(int k=0;k<alist.length;k++){
- 		((Agent)alist[k]).postStep();
- 		//System.out.println("step 4");
-   	   //System.out.println("Poststep   ");
- 	   }
-    }
- 	   
-// 	for(int k=0;k<agentlist.size();k++){
-//  	((GameAgent)agentlist.get(k)).postStep();
-//  	//System.out.println("step   ");
-//   }
- // }
-	
-	@ScheduledMethod(start=stop)
+
+@ScheduledMethod(start=stop)
 	public void end(){
 		try {
 			FileWriter  fwresult = new FileWriter("./SimulationDataOne.txt",true);
@@ -196,11 +129,6 @@ import repast.simphony.context.space.graph.*;
           
           Parameters p = RunEnvironment.getInstance().getParameters();
            int num = (Integer)p.getValue("number of agent");
-//          Object[] alist=new Object[num];
-//          alist=this.toArray();
-//          for(int i=0;i<alist.length;i++){
-//          	agentlist.add(alist[i]);
-//          }
           
           for(int i=0;i<agentlist.size();i++){
               if(((Agent) (agentlist.get(i))).getCurrentStrategy()=='L') numberOfLStrategy++;

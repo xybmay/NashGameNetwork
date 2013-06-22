@@ -1,6 +1,8 @@
 package NashGameNetwork;
 
+import repast.simphony.context.Context;
 import repast.simphony.engine.environment.RunEnvironment;
+import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.parameter.Parameters;
 import repast.simphony.random.RandomHelper;
 import repast.simphony.space.graph.Network;
@@ -21,18 +23,19 @@ public class Agent {
 	private double theta;
 	private boolean ifSocialPreference;
 	private char choosedStrategy;
-	private Model context;
+	private Context context;
 	private  Network network;  //the network agent located in 
 	
-	public Agent( ){
+	public Agent(Context<Agent> context ){
 		//initialize  agent  parameter
 		Parameters p = RunEnvironment.getInstance().getParameters();
         this.network=null;
 		this.lambda=(Double)p.getValue("lambda");
 		this.alpha = (Double)p.getValue("alpha of social preference function");
 		this.beta = (Double)p.getValue("beta of social preference function");
-		this.theta= (Double)p.getValue("theta of social preference coefficient");
+		//this.theta= (Double)p.getValue("theta of social preference coefficient");
 		this.currentStrategy='L';
+		this.context=context;
 	}
 	
 	public static double play(Agent agent1,Agent agent2){
@@ -66,8 +69,8 @@ public class Agent {
 	public double computeOneRoundPayoff() {
 	    //compute the payoff and the socialPreference if needed in initial status
         currentPayoff=0;
-		context = (Model) ContextUtils.getContext(this);
-        network=(Network)context.getProjection("Living world");
+        //System.out.println("context   "+context.size());
+        network=(Network)context.getProjection("world");
         ifSocialPreference=true;
         
 	    Iterable neighbors=network.getAdjacent(this);
@@ -75,9 +78,7 @@ public class Agent {
 	    
 	    for (Object o : neighbors) {
 	    	currentPayoff+=(double)play(this,(Agent)o);
-	       			//System.out.println("pay off is computing   added   "+((GameAgent)o).getID()+"  "+singlePlayCooperation(this,(GameAgent)o));
 	    }  
-	    //System.out.println(" payoff computed  for  cooperation  of agent  "+this.ID+"    "+currentPayoffCooperation);
 	     return currentPayoff;
 	}
 	
@@ -88,9 +89,7 @@ public class Agent {
 	    Iterable neighbors=network.getAdjacent(this);  
         Parameters p = RunEnvironment.getInstance().getParameters();
 		double alpha = (Double)p.getValue("alpha of social preference function");
-		//double beta = (Double)p.getValue("beta of social preference function");
 		double beta=alpha;
-		//double theta= (Double)p.getValue("theta of social preference coefficient");
 		int length=0;
 		double sumAlpha=0;
 		double sumBeta=0;
@@ -109,7 +108,6 @@ public class Agent {
        				sumAlpha+=temp1;
        		 }
        		totalWelfare+=((Agent)o).getCurrentPayoff();
-       		
        		//System.out.println("length     "+length);
        	}
 	   
@@ -184,10 +182,12 @@ public class Agent {
 	    	//System.out.println("strategy no changed");
 	    };
     }
-		
+	
+ //   @ScheduledMethod(start = 1, interval = 1, priority = -1)
 	public void step1() {
-		computeOneRoundPayoff();
-		//play the game with the neighbors and get the payoff.  
+    	computeOneRoundPayoff();
+    	System.out.println("ID:    "+ID+"    payoff    "+this.getCurrentPayoff());
+    	//play the game with the neighbors and get the payoff.  
 	}
 
 	public void step2() {
@@ -364,5 +364,4 @@ public class Agent {
 	public void setChoosedStrategy(char choosedStrategy) {
 		this.choosedStrategy = choosedStrategy;
 	}
-	
 }
