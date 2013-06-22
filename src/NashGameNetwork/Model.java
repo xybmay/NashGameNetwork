@@ -44,7 +44,7 @@ import repast.simphony.context.space.graph.*;
 	private int numberOfMStrategy;
 	private int numberOfHStrategy;
 	
-	public Context<Agent>build(Context<Agent>context){
+	public Context<Agent> build(Context<Agent>context){
 		context.setId("NashGameNetwork");
 		Parameters p = RunEnvironment.getInstance().getParameters();
 		int numberOfAgent = (Integer)p.getValue("number of agent");

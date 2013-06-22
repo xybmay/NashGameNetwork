@@ -183,28 +183,34 @@ public class Agent {
 	    };
     }
 	
- //   @ScheduledMethod(start = 1, interval = 1, priority = -1)
+   @ScheduledMethod(start = 1, interval = 1, priority = 100)
 	public void step1() {
     	computeOneRoundPayoff();
-    	System.out.println("ID:    "+ID+"    payoff    "+this.getCurrentPayoff());
+    	//System.out.println("ID:    "+ID+"    payoff    "+this.getCurrentPayoff());
     	//play the game with the neighbors and get the payoff.  
 	}
 
-	public void step2() {
+   @ScheduledMethod(start = 1, interval = 1, priority = 80)
+   public void step2() {
 		// according the payoff,  computing the payoff when the agent displays social preference;
 		computeCurrentRoundSocialPreference();
+		//System.out.println("ID:    "+ID+"    social  payoff    "+this.getCurrentSocialPayoff());
 	}
 
+   @ScheduledMethod(start = 1, interval = 1, priority = 60)
 	public void step3() {
 		// according the payoff and the randomly chosen neighbor,  choose the strategy next
 		randomMatchAndChooseStrategy( );
+		//System.out.println("ID:    "+ID+"    choice   "+this.getChoosedStrategy());	
 	}
 
+   @ScheduledMethod(start = 1, interval = 1, priority = 50)
 	public void postStep() {
 		// update the status after the the choice
 		currentStrategy=choosedStrategy; //used for the next step
 		previouisPayoff=currentPayoff;
 		previouisSocialPayoff=currentSocialPayoff;
+		//System.out.println("ID:    "+ID+"    post step   ");
 	}
     
 	/**
