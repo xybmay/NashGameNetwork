@@ -37,7 +37,7 @@
 									
 		/>
 				<parameter name="number of social preference agent" displayName="number of social preference agent" type="int" 
-						defaultValue="5000" 
+						defaultValue="0" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									

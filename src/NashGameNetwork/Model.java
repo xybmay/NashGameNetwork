@@ -13,6 +13,7 @@ import repast.simphony.context.DefaultContext;
 import repast.simphony.dataLoader.ContextBuilder;
 import repast.simphony.context.Context;
 import repast.simphony.engine.environment.RunEnvironment;
+import repast.simphony.engine.schedule.ISchedule;
 import repast.simphony.engine.schedule.ScheduleParameters;
 import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.parameter.Parameters;
@@ -102,23 +103,30 @@ import repast.simphony.context.space.graph.*;
 		int numSocialPreference = (Integer)p.getValue("number of social preference agent");
 		int sum=0;
 		
+		//System.out.println(" number of social  preference   "+numSocialPreference);
 		while(sum<numSocialPreference){
 		    RandomHelper.createUniform();
 			int random=RandomHelper.nextIntFromTo(0,numSocialPreference -1);
 		    if (!((Agent)agentlist.get(random)).isIfSocialPreference()){
 		    ((Agent)agentlist.get(random)).setIfSocialPreference(true);
 		    sum++;
+		   // System.out.println(" set social preference   ");
 		    }
 		}
 		  
 		System.out.println("set the agent which is the social preference type  is done!!!");
-		System.out.println("Model will begin");
+		System.out.println("Simulation will begin");
+		
+		ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
+		ScheduleParameters params = ScheduleParameters.createOneTime
+				(1, -1);
+		schedule.schedule(params , this , "end" );
 		
 		return context;
 	  }
 
-@ScheduledMethod(start=stop)
 	public void end(){
+		System.out.println("write to a file ");
 		try {
 			FileWriter  fwresult = new FileWriter("./SimulationDataOne.txt",true);
 			BufferedWriter bwresult = new BufferedWriter(fwresult);

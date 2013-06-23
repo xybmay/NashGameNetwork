@@ -9,7 +9,7 @@ import repast.simphony.space.graph.Network;
 import repast.simphony.util.ContextUtils;
 
 public class Agent {
-  private int ID;
+    private int ID;
 	private char currentStrategy;
 	private char previousStrategy;
 	private char initialStrategy;
@@ -36,6 +36,7 @@ public class Agent {
 		//this.theta= (Double)p.getValue("theta of social preference coefficient");
 		this.currentStrategy='L';
 		this.context=context;
+		this.ifSocialPreference=false;
 	}
 	
 	public static double play(Agent agent1,Agent agent2){
@@ -71,7 +72,6 @@ public class Agent {
         currentPayoff=0;
         //System.out.println("context   "+context.size());
         network=(Network)context.getProjection("world");
-        ifSocialPreference=true;
         
 	    Iterable neighbors=network.getAdjacent(this);
 	    //System.out.println("begin compute the payoff  ");
@@ -117,6 +117,9 @@ public class Agent {
     	   }
        else currentSocialPayoff=currentPayoff-alpha*sumAlpha/length-beta*sumBeta/length;
     		   // +theta*totalWelfare;
+       //System.out.println("ID:    "+ID+"    if social preference   "+ifSocialPreference);
+       //System.out.println("ID:    "+ID+"    payoff    "+this.getCurrentPayoff());
+       //System.out.println("ID:    "+ID+"    social  payoff    "+this.getCurrentSocialPayoff());
 	}
     
     public void randomMatchAndChooseStrategy(){
@@ -180,7 +183,9 @@ public class Agent {
 	    else{
 	    	this.choosedStrategy=this.getCurrentStrategy();
 	    	//System.out.println("strategy no changed");
-	    };
+	    }
+	    //System.out.print(ID+"'s current strategy  "+this.getCurrentStrategy());
+	    //System.out.println(" choosed strategy    "+choosedStrategy);  
     }
 	
    @ScheduledMethod(start = 1, interval = 1, priority = 100)
