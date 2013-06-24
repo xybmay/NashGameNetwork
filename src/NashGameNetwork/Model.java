@@ -118,30 +118,49 @@ import repast.simphony.context.space.graph.*;
 		System.out.println("Simulation will begin");
 		
 		ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
-		ScheduleParameters params = ScheduleParameters.createOneTime
-				(1, -1);
-		schedule.schedule(params , this , "end" );
+		ScheduleParameters paramsEnd = ScheduleParameters.createOneTime
+				(5000, -1);
+		ScheduleParameters paramsStatis = ScheduleParameters.createRepeating(1, 1);
+			
+		schedule.schedule(paramsStatis , this , "statis" );
+		schedule.schedule(paramsEnd , this , "end" );
 		
 		return context;
 	  }
 
+	public void statis(){
+		 numberOfLStrategy=0;
+         numberOfMStrategy=0;
+         numberOfHStrategy=0;
+         
+         Parameters p = RunEnvironment.getInstance().getParameters();
+          int num = (Integer)p.getValue("number of agent");
+         
+         for(int i=0;i<agentlist.size();i++){
+             if(((Agent) (agentlist.get(i))).getCurrentStrategy()=='L') numberOfLStrategy++;
+             else if(((Agent) (agentlist.get(i))).getCurrentStrategy()=='M') numberOfMStrategy++;
+             else numberOfHStrategy++;
+	   }
+         System.out.println("strategy L   "+numberOfLStrategy);
+	}
+	
 	public void end(){
 		System.out.println("write to a file ");
 		try {
 			FileWriter  fwresult = new FileWriter("./SimulationDataOne.txt",true);
 			BufferedWriter bwresult = new BufferedWriter(fwresult);
           PrintWriter pwresult= new PrintWriter(bwresult);
-          numberOfLStrategy=0;
-          numberOfMStrategy=0;
-          numberOfHStrategy=0;
+//          numberOfLStrategy=0;
+//          numberOfMStrategy=0;
+//          numberOfHStrategy=0;
           
           Parameters p = RunEnvironment.getInstance().getParameters();
            int num = (Integer)p.getValue("number of agent");
           
           for(int i=0;i<agentlist.size();i++){
-              if(((Agent) (agentlist.get(i))).getCurrentStrategy()=='L') numberOfLStrategy++;
-              else if(((Agent) (agentlist.get(i))).getCurrentStrategy()=='M') numberOfMStrategy++;
-              else numberOfHStrategy++;
+//              if(((Agent) (agentlist.get(i))).getCurrentStrategy()=='L') numberOfLStrategy++;
+//              else if(((Agent) (agentlist.get(i))).getCurrentStrategy()=='M') numberOfMStrategy++;
+//              else numberOfHStrategy++;
                 
               totalPayoff+=((Agent) (agentlist.get(i))).getCurrentPayoff();
               totalSocialPreferencePayoff+=((Agent) (agentlist.get(i))).getCurrentSocialPayoff();
@@ -184,5 +203,45 @@ import repast.simphony.context.space.graph.*;
 		}
 	   System.out.println("finished write to the file");
 		(RunEnvironment.getInstance()).endAt(stop);
+	}
+
+	public double getTotalPayoff() {
+		return totalPayoff;
+	}
+
+	public void setTotalPayoff(double totalPayoff) {
+		this.totalPayoff = totalPayoff;
+	}
+
+	public double getTotalSocialPreferencePayoff() {
+		return totalSocialPreferencePayoff;
+	}
+
+	public void setTotalSocialPreferencePayoff(double totalSocialPreferencePayoff) {
+		this.totalSocialPreferencePayoff = totalSocialPreferencePayoff;
+	}
+
+	public int getNumberOfLStrategy() {
+		return numberOfLStrategy;
+	}
+
+	public void setNumberOfLStrategy(int numberOfLStrategy) {
+		this.numberOfLStrategy = numberOfLStrategy;
+	}
+
+	public int getNumberOfMStrategy() {
+		return numberOfMStrategy;
+	}
+
+	public void setNumberOfMStrategy(int numberOfMStrategy) {
+		this.numberOfMStrategy = numberOfMStrategy;
+	}
+
+	public int getNumberOfHStrategy() {
+		return numberOfHStrategy;
+	}
+
+	public void setNumberOfHStrategy(int numberOfHStrategy) {
+		this.numberOfHStrategy = numberOfHStrategy;
 	}
 }
