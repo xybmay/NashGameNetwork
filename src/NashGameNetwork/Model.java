@@ -31,7 +31,7 @@ import repast.simphony.context.space.graph.*;
 
   @SuppressWarnings("unchecked")
   public class Model extends DefaultContext implements ContextBuilder<Agent>{
-  //Here we will first construct the world which the agent lives in it.
+    //Here we will first construct the world which the agent lives in it.
 	//first creates the context, then add the agent 
 	//then creates a small world complex network
 	//after the agents' complex interaction network is done,
@@ -122,7 +122,7 @@ import repast.simphony.context.space.graph.*;
 				(5000, -1);
 		ScheduleParameters paramsStatis = ScheduleParameters.createRepeating(1, 1);
 			
-		schedule.schedule(paramsStatis , this , "statis" );
+		//schedule.schedule(paramsStatis , this , "statis" );
 		schedule.schedule(paramsEnd , this , "end" );
 		
 		return context;
@@ -141,7 +141,7 @@ import repast.simphony.context.space.graph.*;
              else if(((Agent) (agentlist.get(i))).getCurrentStrategy()=='M') numberOfMStrategy++;
              else numberOfHStrategy++;
 	   }
-         System.out.println("strategy L   "+numberOfLStrategy);
+         //System.out.println("strategy L  M   H "+numberOfLStrategy+"   "+numberOfMStrategy+"  "+numberOfHStrategy);
 	}
 	
 	public void end(){
@@ -203,45 +203,5 @@ import repast.simphony.context.space.graph.*;
 		}
 	   System.out.println("finished write to the file");
 		(RunEnvironment.getInstance()).endAt(stop);
-	}
-
-	public double getTotalPayoff() {
-		return totalPayoff;
-	}
-
-	public void setTotalPayoff(double totalPayoff) {
-		this.totalPayoff = totalPayoff;
-	}
-
-	public double getTotalSocialPreferencePayoff() {
-		return totalSocialPreferencePayoff;
-	}
-
-	public void setTotalSocialPreferencePayoff(double totalSocialPreferencePayoff) {
-		this.totalSocialPreferencePayoff = totalSocialPreferencePayoff;
-	}
-
-	public int getNumberOfLStrategy() {
-		return numberOfLStrategy;
-	}
-
-	public void setNumberOfLStrategy(int numberOfLStrategy) {
-		this.numberOfLStrategy = numberOfLStrategy;
-	}
-
-	public int getNumberOfMStrategy() {
-		return numberOfMStrategy;
-	}
-
-	public void setNumberOfMStrategy(int numberOfMStrategy) {
-		this.numberOfMStrategy = numberOfMStrategy;
-	}
-
-	public int getNumberOfHStrategy() {
-		return numberOfHStrategy;
-	}
-
-	public void setNumberOfHStrategy(int numberOfHStrategy) {
-		this.numberOfHStrategy = numberOfHStrategy;
 	}
 }
