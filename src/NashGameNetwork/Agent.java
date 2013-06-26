@@ -9,7 +9,7 @@ import repast.simphony.space.graph.Network;
 import repast.simphony.util.ContextUtils;
 
 public class Agent {
-    private int ID;
+        private int ID;
 	private char currentStrategy;
 	private char previousStrategy;
 	private char initialStrategy;
@@ -25,6 +25,9 @@ public class Agent {
 	private char choosedStrategy;
 	private Context context;
 	private  Network network;  //the network agent located in 
+	private  int strategyL;
+	private  int strategyM;
+	private  int strategyH;
 	
 	public Agent(Context<Agent> context ){
 		//initialize  agent  parameter
@@ -186,6 +189,13 @@ public class Agent {
 	    }
 	    //System.out.print(ID+"'s current strategy  "+this.getCurrentStrategy());
 	    //System.out.println(" choosed strategy    "+choosedStrategy);  
+	    strategyL=0;
+	    strategyH=0;
+	    strategyM=0;
+	    
+	    if (choosedStrategy=='L') strategyL=1;
+	    else  if (choosedStrategy=='M') strategyM=1;
+	    else  if (choosedStrategy=='H') strategyH=1;
     }
 	
    @ScheduledMethod(start = 1, interval = 1, priority = 100)
@@ -374,5 +384,47 @@ public class Agent {
 
 	public void setChoosedStrategy(char choosedStrategy) {
 		this.choosedStrategy = choosedStrategy;
+	}
+
+	/**
+	 * @return the strategyL
+	 */
+	public int getStrategyL() {
+		return strategyL;
+	}
+
+	/**
+	 * @param strategyL the strategyL to set
+	 */
+	public void setStrategyL(int strategyL) {
+		this.strategyL = strategyL;
+	}
+
+	/**
+	 * @return the strategyM
+	 */
+	public int getStrategyM() {
+		return strategyM;
+	}
+
+	/**
+	 * @param strategyM the strategyM to set
+	 */
+	public void setStrategyM(int strategyM) {
+		this.strategyM = strategyM;
+	}
+
+	/**
+	 * @return the strategyH
+	 */
+	public int getStrategyH() {
+		return strategyH;
+	}
+
+	/**
+	 * @param strategyH the strategyH to set
+	 */
+	public void setStrategyH(int strategyH) {
+		this.strategyH = strategyH;
 	}
 }
