@@ -9,11 +9,14 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.junit.runner.Runner;
+
 import repast.simphony.context.DefaultContext;
 import repast.simphony.dataLoader.ContextBuilder;
 import repast.simphony.context.Context;
 import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.engine.schedule.ISchedule;
+import repast.simphony.engine.schedule.Schedule;
 import repast.simphony.engine.schedule.ScheduleParameters;
 import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.parameter.Parameters;
@@ -121,9 +124,11 @@ import repast.simphony.context.space.graph.*;
 		ScheduleParameters paramsEnd = ScheduleParameters.createOneTime
 				(5000, -1);
 		ScheduleParameters paramsStatis = ScheduleParameters.createRepeating(1, 1);
-			
+		ScheduleParameters paramsStop = ScheduleParameters.createRepeating(100, 1);
+				
 		//schedule.schedule(paramsStatis , this , "statis" );
-		schedule.schedule(paramsEnd , this , "end" );
+		//schedule.schedule(paramsEnd , this , "end" );
+		schedule.schedule(paramsStop , this , "stop" );
 		
 		return context;
 	  }
@@ -141,30 +146,40 @@ import repast.simphony.context.space.graph.*;
              else if(((Agent) (agentlist.get(i))).getCurrentStrategy()=='M') numberOfMStrategy++;
              else numberOfHStrategy++;
 	   }
-         //System.out.println("strategy L  M   H "+numberOfLStrategy+"   "+numberOfMStrategy+"  "+numberOfHStrategy);
+        // System.out.println("strategy L  M   H "+numberOfLStrategy+"   "+numberOfMStrategy+"  "+numberOfHStrategy);
 	}
 	
-	public void end(){
-		System.out.println("write to a file ");
-		try {
-			FileWriter  fwresult = new FileWriter("./SimulationDataOne.txt",true);
+	public void stop(){
+		numberOfMStrategy=0; 
+		
+		for(int i=0;i<agentlist.size();i++){
+          if(((Agent) (agentlist.get(i))).getCurrentStrategy()=='M') numberOfMStrategy++;
+		 }
+		
+		 System.out.println("strategy  M  "+numberOfMStrategy);
+		 
+         if (numberOfMStrategy==5000){
+			System.out.println(" The Run ended and now write the result to a file ");
+	    	try {
+			FileWriter  fwresult = new FileWriter("./SimulationResult.txt",true);
 			BufferedWriter bwresult = new BufferedWriter(fwresult);
-          PrintWriter pwresult= new PrintWriter(bwresult);
-//          numberOfLStrategy=0;
-//          numberOfMStrategy=0;
-//          numberOfHStrategy=0;
+            PrintWriter pwresult= new PrintWriter(bwresult);
+            
+            numberOfLStrategy=0;
+            numberOfMStrategy=0;
+            numberOfHStrategy=0;
           
           Parameters p = RunEnvironment.getInstance().getParameters();
            int num = (Integer)p.getValue("number of agent");
           
           for(int i=0;i<agentlist.size();i++){
-//              if(((Agent) (agentlist.get(i))).getCurrentStrategy()=='L') numberOfLStrategy++;
-//              else if(((Agent) (agentlist.get(i))).getCurrentStrategy()=='M') numberOfMStrategy++;
-//              else numberOfHStrategy++;
-                
-              totalPayoff+=((Agent) (agentlist.get(i))).getCurrentPayoff();
-              totalSocialPreferencePayoff+=((Agent) (agentlist.get(i))).getCurrentSocialPayoff();
-          }
+              if(((Agent) (agentlist.get(i))).getCurrentStrategy()=='L') numberOfLStrategy++;
+             else if(((Agent) (agentlist.get(i))).getCurrentStrategy()=='M') numberOfMStrategy++;
+              else numberOfHStrategy++;
+             
+//              totalPayoff+=((Agent) (agentlist.get(i))).getCurrentPayoff();
+//              totalSocialPreferencePayoff+=((Agent) (agentlist.get(i))).getCurrentSocialPayoff();
+        }
           
           int numberOfSocialAgent=(Integer) p.getValue("number of social preference agent");
           double alpha=(Double)p.getValue("alpha of social preference function");
@@ -172,36 +187,36 @@ import repast.simphony.context.space.graph.*;
          //double theta=(Double)p.getValue("theta of social preference coefficient");
           double wsProbability=(Double)p.getValue("WS probability");
           int degree=(Integer)p.getValue("neighbor size");
-          pwresult.print("       ");
+//          pwresult.print("       ");
           pwresult.printf("%.15f",((double)(numberOfLStrategy)/(numberOfLStrategy+numberOfMStrategy+numberOfHStrategy)));
-          pwresult.print("       ");
+          pwresult.print("    ");
           pwresult.printf("%.15f",((double)(numberOfMStrategy)/(numberOfLStrategy+numberOfMStrategy+numberOfHStrategy)));
-          pwresult.print("       ");
+          pwresult.print("     ");
           pwresult.printf("%.15f",((double)(numberOfHStrategy)/(numberOfLStrategy+numberOfMStrategy+numberOfHStrategy)));
-          pwresult.print("       ");
-          pwresult.printf("%.1f",(RunEnvironment.getInstance()).getCurrentSchedule().getTickCount()); 
-          pwresult.print("       ");
-          pwresult.printf("%.1f",totalPayoff); 
-          pwresult.print("       ");
-          pwresult.printf("%.1f",totalSocialPreferencePayoff); 
-          pwresult.print("       ");
+          pwresult.print("     ");
+//          pwresult.printf("%.1f",totalPayoff); 
+//          pwresult.print("       ");
+//          pwresult.printf("%.1f",totalSocialPreferencePayoff); 
+//          pwresult.print("       ");
           pwresult.printf("%d",numberOfSocialAgent); 
-          pwresult.print("       ");
+          pwresult.print("     ");
           pwresult.printf("%d",degree); 
-          pwresult.print("       ");
+          pwresult.print("     ");
           pwresult.printf("%f",wsProbability); 
-          pwresult.print("       ");
+          pwresult.print("     ");
           pwresult.printf("%f",alpha); 
-          pwresult.print("       ");
+          pwresult.print("     ");
           pwresult.printf("%f",beta); 
-          pwresult.print("       ");
+          pwresult.print("     ");
+          pwresult.printf("%.1f",(RunEnvironment.getInstance()).getCurrentSchedule().getTickCount()); 
+          pwresult.println("   ");
           //pwresult.printf("%f",theta); 
-          pwresult.println("       ");
           pwresult.close();
 		}catch (IOException e) {
 			e.printStackTrace();
 		}
-	   System.out.println("finished write to the file");
-		(RunEnvironment.getInstance()).endAt(stop);
+	     System.out.println("finished write to the file");
+	     RunEnvironment.getInstance().endRun();
+         }
 	}
 }
