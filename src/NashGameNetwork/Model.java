@@ -41,13 +41,17 @@ import repast.simphony.context.space.graph.*;
 	//the model will random schedule the agent's step method
 	private ArrayList agentlist= new ArrayList();
 	private int actionNumber;
-	private final  int stop=5000;
+	private final  int stop=2000;
 	private double  totalPayoff;
 	private double  totalSocialPreferencePayoff;
 	private int numberOfLStrategy;
 	private int numberOfMStrategy;
 	private int numberOfHStrategy;
-	
+	private boolean recorded3000=false;
+	private boolean recorded4000=false;
+	private boolean recorded4500=false;
+	private boolean recorded4900=false;
+	 
 	public Context<Agent> build(Context<Agent>context){
 		context.setId("NashGameNetwork");
 		Parameters p = RunEnvironment.getInstance().getParameters();
@@ -122,14 +126,16 @@ import repast.simphony.context.space.graph.*;
 		
 		ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
 		ScheduleParameters paramsEnd = ScheduleParameters.createOneTime
-				(5000, -1);
+				(stop, -1);
 		ScheduleParameters paramsStatis = ScheduleParameters.createRepeating(1, 1);
 		ScheduleParameters paramsStop = ScheduleParameters.createRepeating(100, 1);
+		ScheduleParameters paramsInEvolution = ScheduleParameters.createRepeating(100, 1);
 				
 		//schedule.schedule(paramsStatis , this , "statis" );
 		//schedule.schedule(paramsEnd , this , "end" );
-		schedule.schedule(paramsStop , this , "stop" );
-		
+		schedule.schedule(paramsInEvolution , this , "resultInEvolution" );
+		schedule.schedule(paramsStop , this , "stopIfStable" );
+		schedule.schedule(paramsEnd , this , "recordToFile" );
 		return context;
 	  }
 
@@ -149,7 +155,7 @@ import repast.simphony.context.space.graph.*;
         // System.out.println("strategy L  M   H "+numberOfLStrategy+"   "+numberOfMStrategy+"  "+numberOfHStrategy);
 	}
 	
-	public void stop(){
+	public void stopIfStable(){
 		numberOfMStrategy=0; 
 		
 		for(int i=0;i<agentlist.size();i++){
@@ -160,7 +166,48 @@ import repast.simphony.context.space.graph.*;
 		 
          if (numberOfMStrategy==5000){
 			System.out.println(" The Run ended and now write the result to a file ");
-	    	try {
+	    	recordToFile();
+         }
+	}
+		
+	// record the milestone in the evolution process when agents using M reach 3000,4000,4500,4900;
+	public void resultInEvolution(){
+		numberOfMStrategy=0; 
+		
+		for(int i=0;i<agentlist.size();i++){
+          if(((Agent) (agentlist.get(i))).getCurrentStrategy()=='M') numberOfMStrategy++;
+		 }
+		
+		 //System.out.println("strategy  M  "+numberOfMStrategy);
+		 
+         if ((numberOfMStrategy>=3000)&(!recorded3000)){
+			System.out.println(" reach 3000");
+			recorded3000=true;
+	    	recordToFileMiddle();
+         }
+         
+         if ((numberOfMStrategy>=4000)&(!recorded4000)){
+			System.out.println(" reach 4000");
+			recorded4000=true;
+	    	recordToFileMiddle();
+         }
+         
+         if ((numberOfMStrategy>=4500)&(!recorded4500)){
+			System.out.println(" reach 4500");
+			recorded4500=true;
+	    	recordToFileMiddle();
+         }
+         
+         if ((numberOfMStrategy>=4900)&(!recorded4900)){
+			System.out.println(" reach 4900");
+			recorded4900=true;
+	    	recordToFileMiddle();
+         }
+	}
+	
+	// record the result when agents using M reach 5000
+    public void  recordToFile(){
+         try {
 			FileWriter  fwresult = new FileWriter("./SimulationResult.txt",true);
 			BufferedWriter bwresult = new BufferedWriter(fwresult);
             PrintWriter pwresult= new PrintWriter(bwresult);
@@ -188,11 +235,13 @@ import repast.simphony.context.space.graph.*;
           double wsProbability=(Double)p.getValue("WS probability");
           int degree=(Integer)p.getValue("neighbor size");
 //          pwresult.print("       ");
-          pwresult.printf("%.15f",((double)(numberOfLStrategy)/(numberOfLStrategy+numberOfMStrategy+numberOfHStrategy)));
+          pwresult.printf("%.6f",((double)(numberOfLStrategy)/(numberOfLStrategy+numberOfMStrategy+numberOfHStrategy)));
           pwresult.print("    ");
-          pwresult.printf("%.15f",((double)(numberOfMStrategy)/(numberOfLStrategy+numberOfMStrategy+numberOfHStrategy)));
+          pwresult.printf("%.6f",((double)(numberOfMStrategy)/(numberOfLStrategy+numberOfMStrategy+numberOfHStrategy)));
           pwresult.print("     ");
-          pwresult.printf("%.15f",((double)(numberOfHStrategy)/(numberOfLStrategy+numberOfMStrategy+numberOfHStrategy)));
+          pwresult.printf("%.6f",((double)(numberOfHStrategy)/(numberOfLStrategy+numberOfMStrategy+numberOfHStrategy)));
+          pwresult.print("     ");
+          pwresult.printf("%d",numberOfMStrategy); 
           pwresult.print("     ");
 //          pwresult.printf("%.1f",totalPayoff); 
 //          pwresult.print("       ");
@@ -202,11 +251,11 @@ import repast.simphony.context.space.graph.*;
           pwresult.print("     ");
           pwresult.printf("%d",degree); 
           pwresult.print("     ");
-          pwresult.printf("%f",wsProbability); 
+          pwresult.printf("%.4f",wsProbability); 
           pwresult.print("     ");
-          pwresult.printf("%f",alpha); 
+          pwresult.printf("%.4f",alpha); 
           pwresult.print("     ");
-          pwresult.printf("%f",beta); 
+          pwresult.printf("%.4f",beta); 
           pwresult.print("     ");
           pwresult.printf("%.1f",(RunEnvironment.getInstance()).getCurrentSchedule().getTickCount()); 
           pwresult.println("   ");
@@ -216,7 +265,68 @@ import repast.simphony.context.space.graph.*;
 			e.printStackTrace();
 		}
 	     System.out.println("finished write to the file");
-	     RunEnvironment.getInstance().endRun();
+	     RunEnvironment.getInstance().endRun(); // end the game immediately. 
          }
+    
+	// record the milestone in the evolution process to a file 
+    public void  recordToFileMiddle(){
+        try {
+			FileWriter  fwresult = new FileWriter("./SimulationResult.txt",true);
+			BufferedWriter bwresult = new BufferedWriter(fwresult);
+           PrintWriter pwresult= new PrintWriter(bwresult);
+           
+           numberOfLStrategy=0;
+           numberOfMStrategy=0;
+           numberOfHStrategy=0;
+         
+         Parameters p = RunEnvironment.getInstance().getParameters();
+          int num = (Integer)p.getValue("number of agent");
+         
+         for(int i=0;i<agentlist.size();i++){
+             if(((Agent) (agentlist.get(i))).getCurrentStrategy()=='L') numberOfLStrategy++;
+            else if(((Agent) (agentlist.get(i))).getCurrentStrategy()=='M') numberOfMStrategy++;
+             else numberOfHStrategy++;
+            
+//             totalPayoff+=((Agent) (agentlist.get(i))).getCurrentPayoff();
+//             totalSocialPreferencePayoff+=((Agent) (agentlist.get(i))).getCurrentSocialPayoff();
+       }
+         
+         int numberOfSocialAgent=(Integer) p.getValue("number of social preference agent");
+         double alpha=(Double)p.getValue("alpha of social preference function");
+         double beta=(Double)p.getValue("beta of social preference function");
+        //double theta=(Double)p.getValue("theta of social preference coefficient");
+         double wsProbability=(Double)p.getValue("WS probability");
+         int degree=(Integer)p.getValue("neighbor size");
+//         pwresult.print("       ");
+         pwresult.printf("%.6f",((double)(numberOfLStrategy)/(numberOfLStrategy+numberOfMStrategy+numberOfHStrategy)));
+         pwresult.print("    ");
+         pwresult.printf("%.6f",((double)(numberOfMStrategy)/(numberOfLStrategy+numberOfMStrategy+numberOfHStrategy)));
+         pwresult.print("     ");
+         pwresult.printf("%.6f",((double)(numberOfHStrategy)/(numberOfLStrategy+numberOfMStrategy+numberOfHStrategy)));
+         pwresult.print("     ");
+         pwresult.printf("%d",numberOfMStrategy); 
+         pwresult.print("     ");
+//         pwresult.printf("%.1f",totalPayoff); 
+//         pwresult.print("       ");
+//         pwresult.printf("%.1f",totalSocialPreferencePayoff); 
+//         pwresult.print("       ");
+         pwresult.printf("%d",numberOfSocialAgent); 
+         pwresult.print("     ");
+         pwresult.printf("%d",degree); 
+         pwresult.print("     ");
+         pwresult.printf("%.4f",wsProbability); 
+         pwresult.print("     ");
+         pwresult.printf("%.4f",alpha); 
+         pwresult.print("     ");
+         pwresult.printf("%.4f",beta); 
+         pwresult.print("     ");
+         pwresult.printf("%.1f",(RunEnvironment.getInstance()).getCurrentSchedule().getTickCount()); 
+         pwresult.println("   ");
+         //pwresult.printf("%f",theta); 
+         pwresult.close();
+		}catch (IOException e) {
+			e.printStackTrace();
+		}
+	     System.out.println("write to the file in the evolution process to record the milestone");
+        }
 	}
-}

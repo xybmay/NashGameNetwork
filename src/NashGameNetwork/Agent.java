@@ -427,4 +427,5 @@ public class Agent {
 	public void setStrategyH(int strategyH) {
 		this.strategyH = strategyH;
 	}
+	
 }
