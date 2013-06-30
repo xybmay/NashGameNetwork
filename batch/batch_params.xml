@@ -1,3 +1,14 @@
-<?xml version="1.0"?>
-<sweep runs="1">
+<?xml version="1.0" ?>
+<sweep runs="100">
+  <parameter name="number of agent" type="constant" constant_type="number" value="5000"/>
+  <parameter name="neighbor size" type="constant" constant_type="number" value="6"/>
+  <parameter name="number of social preference agent" type="constant" constant_type="number" value="0"/>
+  <parameter name="number of agent in one step" type="constant" constant_type="number" value="5000"/>
+  <parameter name="number of L strategy" type="constant" constant_type="number" value="1667"/>
+  <parameter name="number of H strategy" type="constant" constant_type="number" value="1666"/>
+  <parameter name="number of M strategy" type="constant" constant_type="number" value="1667"/>
+  <parameter name="WS probability" type="constant" constant_type="number" value="0.1"/>
+  <parameter name="alpha of social preference function" type="constant" constant_type="number" value="0.1"/>
+  <parameter name="beta of social preference function" type="constant" constant_type="number" value="0.1"/>
+  <parameter name="lambda" type="constant" constant_type="number" value="0.1"/>
 </sweep>

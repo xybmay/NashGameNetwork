@@ -47,10 +47,10 @@ import repast.simphony.context.space.graph.*;
 	private int numberOfLStrategy;
 	private int numberOfMStrategy;
 	private int numberOfHStrategy;
-	private boolean recorded3000=false;
-	private boolean recorded4000=false;
-	private boolean recorded4500=false;
-	private boolean recorded4900=false;
+	private boolean recorded3000;
+	private boolean recorded4000;
+	private boolean recorded4500;
+	private boolean recorded4900;
 	 
 	public Context<Agent> build(Context<Agent>context){
 		context.setId("NashGameNetwork");
@@ -66,7 +66,11 @@ import repast.simphony.context.space.graph.*;
 		//add the agent to the context
         NetworkGenerator gen= new WattsBetaSmallWorldGenerator(wsProbability,length,false);
 		NetworkBuilder builder=new NetworkBuilder("world",context,false);
-        
+		recorded3000=false;
+		recorded4000=false;
+		recorded4500=false;
+		recorded4900=false;
+
         for(int i=0;i<numberOfAgent;i++ ){
 			Agent agent=new Agent(context); 
 			agent.setID(i);
@@ -79,7 +83,7 @@ import repast.simphony.context.space.graph.*;
 		builder.setGenerator(gen);
 		Network net = builder.buildNetwork();
 		System.out.println("the network creation is done!!!");
-        System.out.println(" the network degree    "+net.getDegree());
+       // System.out.println(" the network degree    "+net.getDegree());
         
 		//set the initial status
 		int numbertemp=0;
@@ -121,7 +125,7 @@ import repast.simphony.context.space.graph.*;
 		    }
 		}
 		  
-		System.out.println("set the agent which is the social preference type  is done!!!");
+		//System.out.println("set the agent which is the social preference type  is done!!!");
 		System.out.println("Simulation will begin");
 		
 		ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
@@ -129,7 +133,7 @@ import repast.simphony.context.space.graph.*;
 				(stop, -1);
 		ScheduleParameters paramsStatis = ScheduleParameters.createRepeating(1, 1);
 		ScheduleParameters paramsStop = ScheduleParameters.createRepeating(100, 1);
-		ScheduleParameters paramsInEvolution = ScheduleParameters.createRepeating(100, 1);
+		ScheduleParameters paramsInEvolution = ScheduleParameters.createRepeating(1, 1);
 				
 		//schedule.schedule(paramsStatis , this , "statis" );
 		//schedule.schedule(paramsEnd , this , "end" );
@@ -162,10 +166,10 @@ import repast.simphony.context.space.graph.*;
           if(((Agent) (agentlist.get(i))).getCurrentStrategy()=='M') numberOfMStrategy++;
 		 }
 		
-		 System.out.println("strategy  M  "+numberOfMStrategy);
+		 //System.out.println("strategy  M  "+numberOfMStrategy);
 		 
          if (numberOfMStrategy==5000){
-			System.out.println(" The Run ended and now write the result to a file ");
+			System.out.println(" The current Run is ended and now we write the results to a file ");
 	    	recordToFile();
          }
 	}
@@ -178,28 +182,28 @@ import repast.simphony.context.space.graph.*;
           if(((Agent) (agentlist.get(i))).getCurrentStrategy()=='M') numberOfMStrategy++;
 		 }
 		
-		 //System.out.println("strategy  M  "+numberOfMStrategy);
+		// System.out.println(" recorded3000  "+recorded3000);
 		 
          if ((numberOfMStrategy>=3000)&(!recorded3000)){
-			System.out.println(" reach 3000");
+			//System.out.println(" reach 3000");
 			recorded3000=true;
 	    	recordToFileMiddle();
          }
          
          if ((numberOfMStrategy>=4000)&(!recorded4000)){
-			System.out.println(" reach 4000");
+			//System.out.println(" reach 4000");
 			recorded4000=true;
 	    	recordToFileMiddle();
          }
          
          if ((numberOfMStrategy>=4500)&(!recorded4500)){
-			System.out.println(" reach 4500");
+			//System.out.println(" reach 4500");
 			recorded4500=true;
 	    	recordToFileMiddle();
          }
          
          if ((numberOfMStrategy>=4900)&(!recorded4900)){
-			System.out.println(" reach 4900");
+			//System.out.println(" reach 4900");
 			recorded4900=true;
 	    	recordToFileMiddle();
          }
@@ -327,6 +331,6 @@ import repast.simphony.context.space.graph.*;
 		}catch (IOException e) {
 			e.printStackTrace();
 		}
-	     System.out.println("write to the file in the evolution process to record the milestone");
+	     //System.out.println("write to the file in the evolution process to record the milestone");
         }
 	}
