@@ -23,7 +23,7 @@ public class Agent {
 	private double theta;
 	private boolean ifSocialPreference;
 	private char choosedStrategy;
-	private Context context;
+	private  Context context;
 	private  Network network;  //the network agent located in 
 	private  int strategyL;
 	private  int strategyM;
@@ -36,7 +36,7 @@ public class Agent {
 		this.lambda=(Double)p.getValue("lambda");
 		this.alpha = (Double)p.getValue("alpha of social preference function");
 		this.beta = (Double)p.getValue("beta of social preference function");
-		//this.theta= (Double)p.getValue("theta of social preference coefficient");
+		this.theta= (Double)p.getValue("theta of social preference coefficient");
 		this.currentStrategy='L';
 		this.context=context;
 		this.ifSocialPreference=false;
@@ -118,8 +118,7 @@ public class Agent {
     	   {
     	   currentSocialPayoff=currentPayoff;
     	   }
-       else currentSocialPayoff=currentPayoff-alpha*sumAlpha/length-beta*sumBeta/length;
-    		   // +theta*totalWelfare;
+       else currentSocialPayoff=currentPayoff-alpha*sumAlpha/length-beta*sumBeta/length+theta*totalWelfare;
        //System.out.println("ID:    "+ID+"    if social preference   "+ifSocialPreference);
        //System.out.println("ID:    "+ID+"    payoff    "+this.getCurrentPayoff());
        //System.out.println("ID:    "+ID+"    social  payoff    "+this.getCurrentSocialPayoff());
@@ -165,10 +164,10 @@ public class Agent {
            				temp1D=((Agent)o).getCurrentSocialPayoff()-random.getCurrentSocialPayoff();
            				sumAlphaD+=temp1D;
            		 }
-           		//totalWelfareD+=((Agent)o).getCurrentPayoff();
+           		totalWelfareD+=((Agent)o).getCurrentPayoff();
        		
-       	 assumedRamdomNeighborSocialpayoff=random.getCurrentPayoff()-alpha*sumAlphaD/lengthD-beta*sumBetaD/lengthD;
-            //+theta*(totalWelfareD+difference);
+       	         assumedRamdomNeighborSocialpayoff=random.getCurrentPayoff()-alpha*sumAlphaD/lengthD-beta*sumBetaD/lengthD
+                                                                                       +theta*totalWelfareD;
        		 
        	  }
 		}

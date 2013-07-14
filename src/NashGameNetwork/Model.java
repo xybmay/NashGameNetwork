@@ -86,30 +86,31 @@ import repast.simphony.context.space.graph.*;
        // System.out.println(" the network degree    "+net.getDegree());
         
 		//set the initial status
-		int numbertemp=0;
-		while( numbertemp<numberOfMStrategy){
+		int numbertemp1=0;
+		while( numbertemp1<numberOfMStrategy){
 			RandomHelper.createUniform();
 			int random=RandomHelper.nextIntFromTo(0, numberOfAgent-1);
 			if (((Agent)agentlist.get(random)).getCurrentStrategy()=='L')
 			           	{
 				           ((Agent)agentlist.get(random)).setCurrentStrategy('M');
-				           numbertemp++;
+				           numbertemp1++;
 			           	}
 			else continue;
 		}
 		
-		numbertemp=0;
-		while( numbertemp<numberOfHStrategy){
+		int numbertemp2=0;
+		while( numbertemp2<numberOfHStrategy){
 			RandomHelper.createUniform();
 			int random=RandomHelper.nextIntFromTo(0, numberOfAgent-1);
-			if ((((Agent)agentlist.get(random)).getCurrentStrategy()=='L') ||
-				 (((Agent)agentlist.get(random)).getCurrentStrategy()=='M'))           	
+			if (((Agent)agentlist.get(random)).getCurrentStrategy()=='L') 
 			          {
 				           ((Agent)agentlist.get(random)).setCurrentStrategy('H');
-				           numbertemp++;
+				           numbertemp2++;
 			           	}
 			else continue;
 		}
+		
+		System.out.println(" strategy distribution   "+numbertemp1+"    "+numbertemp2);
 		
 		int numSocialPreference = (Integer)p.getValue("number of social preference agent");
 		int sum=0;
@@ -125,7 +126,7 @@ import repast.simphony.context.space.graph.*;
 		    }
 		}
 		  
-		//System.out.println("set the agent which is the social preference type  is done!!!");
+		System.out.println("set the agent which is the social preference type  is done!!!");
 		System.out.println("Simulation will begin");
 		
 		ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
@@ -137,7 +138,7 @@ import repast.simphony.context.space.graph.*;
 				
 		//schedule.schedule(paramsStatis , this , "statis" );
 		//schedule.schedule(paramsEnd , this , "end" );
-		schedule.schedule(paramsInEvolution , this , "resultInEvolution" );
+		//schedule.schedule(paramsInEvolution , this , "resultInEvolution" );
 		schedule.schedule(paramsStop , this , "stopIfStable" );
 		schedule.schedule(paramsEnd , this , "recordToFile" );
 		return context;
@@ -235,7 +236,7 @@ import repast.simphony.context.space.graph.*;
           int numberOfSocialAgent=(Integer) p.getValue("number of social preference agent");
           double alpha=(Double)p.getValue("alpha of social preference function");
           double beta=(Double)p.getValue("beta of social preference function");
-         //double theta=(Double)p.getValue("theta of social preference coefficient");
+          double theta=(Double)p.getValue("theta of social preference coefficient");
           double wsProbability=(Double)p.getValue("WS probability");
           int degree=(Integer)p.getValue("neighbor size");
 //          pwresult.print("       ");
@@ -262,8 +263,9 @@ import repast.simphony.context.space.graph.*;
           pwresult.printf("%.4f",beta); 
           pwresult.print("     ");
           pwresult.printf("%.1f",(RunEnvironment.getInstance()).getCurrentSchedule().getTickCount()); 
+          pwresult.print("   ");
+          pwresult.printf("%f",theta); 
           pwresult.println("   ");
-          //pwresult.printf("%f",theta); 
           pwresult.close();
 		}catch (IOException e) {
 			e.printStackTrace();
@@ -298,7 +300,7 @@ import repast.simphony.context.space.graph.*;
          int numberOfSocialAgent=(Integer) p.getValue("number of social preference agent");
          double alpha=(Double)p.getValue("alpha of social preference function");
          double beta=(Double)p.getValue("beta of social preference function");
-        //double theta=(Double)p.getValue("theta of social preference coefficient");
+         double theta=(Double)p.getValue("theta of social preference coefficient");
          double wsProbability=(Double)p.getValue("WS probability");
          int degree=(Integer)p.getValue("neighbor size");
 //         pwresult.print("       ");
@@ -326,7 +328,8 @@ import repast.simphony.context.space.graph.*;
          pwresult.print("     ");
          pwresult.printf("%.1f",(RunEnvironment.getInstance()).getCurrentSchedule().getTickCount()); 
          pwresult.println("   ");
-         //pwresult.printf("%f",theta); 
+         pwresult.printf("%f",theta); 
+         pwresult.println("   ");
          pwresult.close();
 		}catch (IOException e) {
 			e.printStackTrace();

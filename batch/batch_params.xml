@@ -7,7 +7,7 @@
   <parameter name="number of L strategy" type="constant" constant_type="number" value="1667"/>
   <parameter name="number of H strategy" type="constant" constant_type="number" value="1666"/>
   <parameter name="number of M strategy" type="constant" constant_type="number" value="1667"/>
-  <parameter name="WS probability" type="constant" constant_type="number" value="0.1"/>
+  <parameter name="WS probability" type="constant" constant_type="number" value="0.0"/>
   <parameter name="alpha of social preference function" type="constant" constant_type="number" value="0.1"/>
   <parameter name="beta of social preference function" type="constant" constant_type="number" value="0.1"/>
   <parameter name="lambda" type="constant" constant_type="number" value="0.1"/>

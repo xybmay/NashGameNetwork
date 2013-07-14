@@ -13,7 +13,7 @@
 									
 		/>
 				<parameter name="number of L strategy" displayName="number of L strategy" type="int" 
-						defaultValue="1600" 
+						defaultValue="1667" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
@@ -43,7 +43,7 @@
 									
 		/>
 				<parameter name="number of M strategy" displayName="number of M strategy" type="int" 
-						defaultValue="1600" 
+						defaultValue="1666" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
@@ -60,6 +60,13 @@
 						converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter"
 									
 		/>
+		
+		        <parameter name="theta of social preference coefficient" displayName="theta of social preference coefficient" type="double" 
+						defaultValue="0.1" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter"
+									
+		/>
 				<parameter name="number of agent in one step" displayName="number of agent in one step" type="int" 
 						defaultValue="5000" 
 						isReadOnly="false" 
@@ -67,7 +74,7 @@
 									
 		/>
 				<parameter name="number of H strategy" displayName="number of H strategy" type="int" 
-						defaultValue="1800" 
+						defaultValue="1667" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
